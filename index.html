@@ -24,28 +24,34 @@ canvas {
   border: 3px solid orange;
 }
 
-/* Kontrol panah di layar */
+/* Kontrol panah lingkaran */
 .controls {
   display: flex;
   justify-content: center;
+  flex-wrap: wrap;
   margin-top: 10px;
+  gap: 10px;
 }
 
 .arrow-btn {
-  width: 50px;
-  height: 50px;
-  margin: 5px;
+  width: 60px;
+  height: 60px;
   background: orange;
   border: none;
   color: white;
   font-size: 24px;
   cursor: pointer;
-  border-radius: 5px;
+  border-radius: 50%; /* BULAT */
   font-weight: bold;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.1s, background 0.2s;
 }
 
 .arrow-btn:hover {
   background: #ff9900;
+  transform: scale(1.1);
 }
 </style>
 </head>
@@ -53,7 +59,7 @@ canvas {
 
 <h1>🍕 PizzaDayToken Snake</h1>
 <h2>Score: <span id="score">0</span></h2>
-<p>Gunakan tombol panah atau klik tombol di bawah ⬅⬆➡⬇</p>
+<p>Gunakan tombol panah atau klik tombol bulat di bawah ⬅⬆➡⬇</p>
 
 <canvas id="game" width="400" height="400"></canvas>
 <button onclick="startGame()">Start Game</button>
@@ -83,7 +89,7 @@ function startGame() {
   food = randomFood();
   score = 0;
   direction = "RIGHT";
-  speed = 300; // Speed awal pelan
+  speed = 300; // speed awal pelan
   document.getElementById("score").innerText = score;
 
   clearInterval(game);
@@ -92,7 +98,6 @@ function startGame() {
 
 // SET DIRECTION DARI TOMBOL MOUSE
 function setDirection(dir) {
-  // Cegah balik 180°
   if (dir === "LEFT" && direction !== "RIGHT") direction = "LEFT";
   if (dir === "UP" && direction !== "DOWN") direction = "UP";
   if (dir === "RIGHT" && direction !== "LEFT") direction = "RIGHT";
