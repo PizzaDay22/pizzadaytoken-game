@@ -24,16 +24,27 @@ canvas {
   border: 3px solid orange;
 }
 
-button {
-  padding: 10px 20px;
-  font-size: 16px;
-  cursor: pointer;
+/* Kontrol panah di layar */
+.controls {
+  display: flex;
+  justify-content: center;
+  margin-top: 10px;
+}
+
+.arrow-btn {
+  width: 50px;
+  height: 50px;
+  margin: 5px;
   background: orange;
   border: none;
+  color: white;
+  font-size: 24px;
+  cursor: pointer;
+  border-radius: 5px;
   font-weight: bold;
 }
 
-button:hover {
+.arrow-btn:hover {
   background: #ff9900;
 }
 </style>
@@ -42,9 +53,17 @@ button:hover {
 
 <h1>🍕 PizzaDayToken Snake</h1>
 <h2>Score: <span id="score">0</span></h2>
-<p>Gunakan tombol panah ⬅⬆➡⬇</p>
+<p>Gunakan tombol panah atau klik tombol di bawah ⬅⬆➡⬇</p>
+
 <canvas id="game" width="400" height="400"></canvas>
 <button onclick="startGame()">Start Game</button>
+
+<div class="controls">
+  <button class="arrow-btn" onclick="setDirection('LEFT')">⬅</button>
+  <button class="arrow-btn" onclick="setDirection('UP')">⬆</button>
+  <button class="arrow-btn" onclick="setDirection('DOWN')">⬇</button>
+  <button class="arrow-btn" onclick="setDirection('RIGHT')">➡</button>
+</div>
 
 <script>
 const canvas = document.getElementById("game");
@@ -64,15 +83,27 @@ function startGame() {
   food = randomFood();
   score = 0;
   direction = "RIGHT";
-  speed = 300; // 🔥 SPEED AWAL PELAN
+  speed = 300; // Speed awal pelan
   document.getElementById("score").innerText = score;
 
   clearInterval(game);
   game = setInterval(draw, speed);
 }
 
-// KEY CONTROL
+// SET DIRECTION DARI TOMBOL MOUSE
+function setDirection(dir) {
+  // Cegah balik 180°
+  if (dir === "LEFT" && direction !== "RIGHT") direction = "LEFT";
+  if (dir === "UP" && direction !== "DOWN") direction = "UP";
+  if (dir === "RIGHT" && direction !== "LEFT") direction = "RIGHT";
+  if (dir === "DOWN" && direction !== "UP") direction = "DOWN";
+}
+
+// KEYBOARD CONTROL
 window.addEventListener("keydown", function(e) {
+  if(["ArrowLeft","ArrowUp","ArrowRight","ArrowDown"].includes(e.key)) {
+    e.preventDefault();
+  }
   if (e.key === "ArrowLeft" && direction !== "RIGHT") direction = "LEFT";
   if (e.key === "ArrowUp" && direction !== "DOWN") direction = "UP";
   if (e.key === "ArrowRight" && direction !== "LEFT") direction = "RIGHT";
@@ -92,13 +123,13 @@ function draw() {
   ctx.fillStyle = "#222";
   ctx.fillRect(0, 0, 400, 400);
 
-  // DRAW SNAKE
+  // Draw snake
   for (let i = 0; i < snake.length; i++) {
     ctx.fillStyle = i === 0 ? "lime" : "green";
     ctx.fillRect(snake[i].x, snake[i].y, box, box);
   }
 
-  // DRAW FOOD
+  // Draw food
   ctx.fillStyle = "orange";
   ctx.fillRect(food.x, food.y, box, box);
 
@@ -110,7 +141,7 @@ function draw() {
   if (direction === "RIGHT") headX += box;
   if (direction === "DOWN") headY += box;
 
-  // GAME OVER CHECK
+  // GAME OVER
   if (
     headX < 0 || headX >= 400 ||
     headY < 0 || headY >= 400 ||
@@ -129,7 +160,7 @@ function draw() {
     document.getElementById("score").innerText = score;
     food = randomFood();
 
-    // 🔥 SPEED NAIK PERLAHAN
+    // Percepat perlahan
     if (speed > 80) {
       speed -= 5;
       clearInterval(game);
